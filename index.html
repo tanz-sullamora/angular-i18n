@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ru" ng-app="test-app">
+	<head>
+		<meta charset="utf-8">
+		<title>i18n</title>
+		<script src="lib/angular/angular.min.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/locales.js"></script>
+		<script src="js/i18n.js"></script>
+	</head>
+	<body ng-controller="test">
+		<p><a href="#" ng-click="setLocale('ru-ru')">ru</a> | <a href="#" ng-click="setLocale('en-us')">en</a></p>
+		<p>{{'Привет, мир'|i18n}}</p>
+		<p>{{'%1 яблоко. Весёлый %2'|i18n:'Красное':'мальчик'}}</p>
+		<p>{{'Всего %1 яблоко в %2 корзине'|i18n:'plural':q:'моей'}} <input class="input-small" ng-model="q" ></p>
+		<p>{{jsString}}</p>
+		<p>{{jsString2}}</p>
+	</body>
+</html>
