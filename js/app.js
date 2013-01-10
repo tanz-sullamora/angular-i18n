@@ -5,7 +5,6 @@
 angular.module('test-app', ['tanzFilters']);
 
 function test($scope, $locale, $filter) {
-	var l = $locale;
 	$scope.q = 0;
 
 	$scope.jsString = $filter('i18n')('Строка в js');
