@@ -54,11 +54,15 @@ angular.module('tanzFilters', []).filter('i18n', function($locale) {
 
 			switch ($locale.id) {
 				case 'en-us':
+				case 'de-de':
+				case 'es-es':
 					plural = 0 + (n != 1);
 					break;
 				case 'ru-ru':
 					plural = (n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);
 					break;
+				case 'ar':
+					plural = n == 0 ? 0 : n == 1 ? 1 : n == 2 ? 2 : n % 100 >= 3 && n % 100 <= 10 ? 3 : n % 100 >= 11 ? 4 : 5;
 				default:
 					plural = 0 + (n != 1);
 			}
