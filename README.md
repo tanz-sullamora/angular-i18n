@@ -1,9 +1,9 @@
 angular-i18n
 ============
 
-<a href="#en">English version</a> <a href="http://tanz-sullamora.github.com/angular-i18n/">Demo</a>
+<a href="#en">English version</a> | <a href="http://tanz-sullamora.github.com/angular-i18n/">Demo</a>
 
-Фильтр для локализации.
+Фильтр для локализации. Реализована поддержка для множественных форм русского, английского и немецкого языков.
 
 Использование:
 -------
@@ -53,6 +53,10 @@ angular-i18n
 в контроллере:
 
     $filter('i18n')('Строка в js');
+
+или
+
+    i18nFilter('Строка в js');
     
 в файле locales.js:
 
@@ -61,7 +65,8 @@ angular-i18n
 с переменными:
 
     $filter('i18n')('Текущая локаль: %1', $locale.id);
-    
+
+
 в файле locales.js:
 
      var _locales = { 'ru-ru': { 'Текущая локаль: %1': 'Текущая локаль: %1' }, 'en-us': { 'Текущая локаль: %1': 'Current locale: %1' } };
@@ -71,7 +76,7 @@ angular-i18n
 English
 ============
 
-Localization fliter.
+Localization fliter. Currently supports english, russian, german plural forms.
 
 Using:
 -------
@@ -121,6 +126,10 @@ in locales.js:
 in controller:
 
     $filter('i18n')('String in js');
+
+or
+
+   i18nFilter('String in js');
     
 in locales.js:
 
