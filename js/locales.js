@@ -16,9 +16,9 @@ var _locales = {
         },
 
         'en-us': {
-        	'Привет, мир': 'Hello, world',
+         'Привет, мир': 'Hello, world',
 
-        	'%1 яблоко. Весёлый %2': 'Apple is %1. Happy %2',
+         '%1 яблоко. Весёлый %2': 'Apple is %1. Happy %2',
 
             'Всего %1 яблоко в %2 корзине': [
                 'There is %1 apple in %2 basket',
