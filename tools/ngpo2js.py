@@ -1,42 +1,81 @@
 #!/usr/bin/python
 
 import sys
+import re
 import demjson
 
-def writePO(fileName, key, obj):
-	pluralForms = {'ru-ru': 'nplurals=3; plural = (n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2)',
-					'en-us': 'nplurals=2; plural = 0 + (n != 1)',
-					'de-de': 'nplurals=2; plural = 0 + (n != 1)',
-					'es-es': 'nplurals=2; plural = 0 + (n != 1)',
-					'ar': 'nplurals=6; plural = n == 0 ? 0 : n == 1 ? 1 : n == 2 ? 2 : n % 100 >= 3 && n % 100 <= 10 ? 3 : n % 100 >= 11 ? 4 : 5'
-				}
-	poFile = open(opts[1] + key + '.po', 'w')
-	poFile.write(u'msgid ""\r\nmsgstr ""\r\n"Plural-Forms: ' + pluralForms[key] + '\\n"\r\n"Content-Type: text/plain; charset=utf-8\\n"\r\n"Content-Transfer-Encoding: 8bit\\n"\r\n');
-	for i in obj:
-		poFile.write('\r\n')
-		poFile.write('msgid "' + i.encode("utf-8") + '"\r\n')
-		if isinstance(obj[i], list):
-		 	poFile.write('msgid_plural "' + i.encode("utf-8") + '"\r\n')
-		 	for k, v in enumerate(obj[i]):
-		 		poFile.write('msgstr[' + str(k) + '] "' + v.encode("utf-8") + '"\r\n')
+def parsePO(locale, poFileName):
+	jsonText = "\t\t'" + locale + "': {\n"
+	poFile = open(poFileName, 'rb')
+
+	dontForgetToClosePlural = False
+	dontForgetToCloseMultiline = False
+	passEmptyId = False
+	for line in	poFile:
+		if ((line == '') or (line == '\n')):
+			pass
 		else:
-		 	poFile.write('msgstr "' + obj[i].encode("utf-8") + '"\r\n')
+			msgid = re.search('msgid "(.*)"', line, re.I | re.S | re.U)
+			if msgid:
+				if (msgid.group(1) == ''):
+					passEmptyId = True
+				else:
+					passEmptyId = False
+					if dontForgetToClosePlural:
+						dontForgetToClosePlural = False
+						jsonText += '\t\t\t],\n'
+
+					if dontForgetToCloseMultiline:
+						dontForgetToCloseMultiline = False
+						jsonText += "',\n"
+
+					jsonText += "\t\t\t'" + msgid.group(1) + "': "
+
+			msgidPlural = re.search('msgid_plural "(.+)"', line, re.I | re.S | re.U)
+			if msgidPlural:
+				jsonText += '[\n'
+				dontForgetToClosePlural = True
+
+			if dontForgetToCloseMultiline:
+				msgstr = re.search('"(.*)"', line, re.I | re.S | re.U)
+				if msgstr:
+					jsonText += msgstr.group(1)
+
+			msgstr = re.search('msgstr "(.*)"', line, re.I | re.S | re.U)
+			if msgstr:
+				if (not passEmptyId):
+					if (msgstr.group(1) == ''):
+						dontForgetToCloseMultiline = True
+						jsonText += "'"
+					else:
+						jsonText += "'" + msgstr.group(1) + "',\n"
+
+			msgstrPlural = re.search('msgstr\[[0-9]+\] "(.*)"', line, re.I | re.S | re.U)
+			if msgstrPlural:
+				jsonText += "\t\t\t\t'" + msgstrPlural.group(1) + "',\n"
+
 	poFile.close()
+
+	jsonText += '\t\t},\n\n'
+
+	return jsonText
 
 
 opts = sys.argv[1:]
-if (len(opts) != 2):
-	print 'Both input and output files must be specified'
+if (len(opts) == 0):
+	print('Usage:\n  ngpo2js -l ru-ru po1.po -l en-us po2.po -o output.js')
 	sys.exit()
 
-jsonFile = open(opts[0], 'rb')
-jsonText = jsonFile.read()
-jsonFile.close()
+locales = {}
+for i, v in enumerate(opts):
+	if (v == '-o'):
+		ouputFileName = opts[i + 1]
+	elif (v == '-l'):
+		locales[opts[i + 1]] = opts[i + 2]
 
-jsonText = jsonText.replace('var _locales = ', '')
-jsonText = jsonText.replace('\n', '')
-
-decoded = demjson.decode(jsonText)
-
-for i in decoded:
-	writePO(opts[1], i, decoded[i])
+outputFile = open(ouputFileName, 'wb')
+outputFile.write(u'var _locales = {\n')
+for i in locales:
+	outputFile.write(parsePO(i, locales[i]))
+outputFile.write('}')
+outputFile.close()

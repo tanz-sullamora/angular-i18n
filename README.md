@@ -106,7 +106,7 @@ in template:
     
 in locales.js:
 
-     var _locales = {
+    var _locales = {
          'ru-ru': {
              'There is %1 apple in %2 basket': [
                  'Всего %1 яблоко в %2 корзине',
@@ -129,11 +129,11 @@ in controller:
 
 or
 
-   i18nFilter('String in js');
+    i18nFilter('String in js');
     
 in locales.js:
 
-     var _locales = { 'ru-ru': { 'String in js': 'Строка в js' }, 'en-us': { 'String in js': 'String in js' } };
+    var _locales = { 'ru-ru': { 'String in js': 'Строка в js' }, 'en-us': { 'String in js': 'String in js' } };
 
 with variables:
 
@@ -141,5 +141,5 @@ with variables:
     
 in locales.js:
 
-     var _locales = { 'ru-ru': { 'Current locale: %1': 'Текущая локаль: %1' }, 'en-us': { 'Current locale: %1': 'Current locale: %1' } };
+    var _locales = { 'ru-ru': { 'Current locale: %1': 'Текущая локаль: %1' }, 'en-us': { 'Current locale: %1': 'Current locale: %1' } };
 
