@@ -2,7 +2,9 @@
 
 import sys
 import re
-import demjson
+
+def escape(text):
+	return text.replace('\'', "\\'").replace('\\"', '"')
 
 def parsePO(locale, poFileName):
 	jsonText = "\t\t'" + locale + "': {\n"
@@ -29,7 +31,7 @@ def parsePO(locale, poFileName):
 						dontForgetToCloseMultiline = False
 						jsonText += "',\n"
 
-					jsonText += "\t\t\t'" + msgid.group(1) + "': "
+					jsonText += "\t\t\t'" + escape(msgid.group(1)) + "': "
 
 			msgidPlural = re.search('msgid_plural "(.+)"', line, re.I | re.S | re.U)
 			if msgidPlural:
@@ -39,7 +41,7 @@ def parsePO(locale, poFileName):
 			if dontForgetToCloseMultiline:
 				msgstr = re.search('"(.*)"', line, re.I | re.S | re.U)
 				if msgstr:
-					jsonText += msgstr.group(1)
+					jsonText += escape(msgstr.group(1))
 
 			msgstr = re.search('msgstr "(.*)"', line, re.I | re.S | re.U)
 			if msgstr:
@@ -48,11 +50,11 @@ def parsePO(locale, poFileName):
 						dontForgetToCloseMultiline = True
 						jsonText += "'"
 					else:
-						jsonText += "'" + msgstr.group(1) + "',\n"
+						jsonText += "'" + escape(msgstr.group(1)) + "',\n"
 
 			msgstrPlural = re.search('msgstr\[[0-9]+\] "(.*)"', line, re.I | re.S | re.U)
 			if msgstrPlural:
-				jsonText += "\t\t\t\t'" + msgstrPlural.group(1) + "',\n"
+				jsonText += "\t\t\t\t'" + escape(msgstrPlural.group(1)) + "',\n"
 
 	poFile.close()
 

@@ -4,6 +4,9 @@ import sys
 import demjson
 import re
 
+def escape(text):
+	return text.replace('\\"', '"').replace('"', '\\"')
+
 def writePO(fileName, key, obj):
 	pluralForms = {'ru-ru': 'nplurals=3; plural=(n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2)',
 					'en-us': 'nplurals=2; plural=(n != 1)',
@@ -15,13 +18,13 @@ def writePO(fileName, key, obj):
 	poFile.write(u'msgid ""\nmsgstr ""\n"Plural-Forms: ' + pluralForms[key] + '\\n"\n"Content-Type: text/plain; charset=utf-8\\n"\n"Content-Transfer-Encoding: 8bit\\n"\n');
 	for i in obj:
 		poFile.write('\n')
-		poFile.write('msgid "' + i.encode("utf-8") + '"\n')
+		poFile.write('msgid "' + escape(i.encode("utf-8")) + '"\n')
 		if isinstance(obj[i], list):
-		 	poFile.write('msgid_plural "' + i.encode("utf-8") + '"\n')
+		 	poFile.write('msgid_plural "' + escape(i.encode("utf-8")) + '"\n')
 		 	for k, v in enumerate(obj[i]):
-		 		poFile.write('msgstr[' + str(k) + '] "' + v.encode("utf-8") + '"\n')
+		 		poFile.write('msgstr[' + str(k) + '] "' + escape(v.encode("utf-8")) + '"\n')
 		else:
-		 	poFile.write('msgstr "' + obj[i].encode("utf-8") + '"\n')
+		 	poFile.write('msgstr "' + escape(obj[i].encode("utf-8")) + '"\n')
 	poFile.close()
 
 
