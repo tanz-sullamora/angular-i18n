@@ -67,7 +67,9 @@ angular.module('tanzFilters', []).filter('i18n', function($locale) {
 					plural = 0 + (n != 1);
 			}
 
-			str = _locales[$locale.id][str][plural] || str;
+			if (_locales[$locale.id][str]) {
+				str = _locales[$locale.id][str][plural] || str;
+			}
 			offset = 2;
 		} else {
 			str = _locales[$locale.id][str] || str;
